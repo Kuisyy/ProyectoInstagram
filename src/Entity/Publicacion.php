@@ -30,6 +30,9 @@ class Publicacion
     #[ORM\OneToMany(targetEntity: Comments::class, mappedBy: 'publicacion')]
     private Collection $comments;
 
+    #[ORM\Column]
+    private ?int $likes = null;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
@@ -102,6 +105,18 @@ class Publicacion
                 $comment->setPublicacion(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getLikes(): ?int
+    {
+        return $this->likes;
+    }
+
+    public function setLikes(int $likes): static
+    {
+        $this->likes = $likes;
 
         return $this;
     }
