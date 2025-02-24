@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Panel de Administración{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block body %}
+<div class="admin-dashboard">
+    <h1>Panel de Administración</h1>
+    
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>Posts más gustados</h3>
+            <canvas id="likesChart"></canvas>
+        </div>
+        
+        <div class="stat-card">
+            <h3>Posts más comentados</h3>
+            <canvas id="commentsChart"></canvas>
+        </div>
+        
+        <div class="stat-card">
+            <h3>Usuarios más seguidos</h3>
+            <canvas id="usersChart"></canvas>
+        </div>
+    </div>
+
+    <div class="reports-section">
+        <h2>Reportes pendientes</h2>
+        {% for report in reports %}
+            <div class="report-card">
+                <p>Usuario: {{ report.reporter.username }}</p>
+                <p>Post: {{ report.publicacion.description }}</p>
+                <p>Razón: {{ report.reason }}</p>
+                <button onclick="resolveReport({{ report.id }})">Resolver</button>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+// Código básico para las gráficas usando Chart.js
+const likesCtx = document.getElementById('likesChart').getContext('2d');
+new Chart(likesCtx, {
+    type: 'bar',
+    data: {
+        labels: {{ stats.topPosts|map(p => p.description)|json_encode|raw }},
+        datasets: [{
+            label: 'Likes',
+            data: {{ stats.topPosts|map(p => p.likes)|json_encode|raw }}
+        }]
+    }
+});
+// Similar para los otros gráficos...
+</script>
+{% endblock %} 

@@ -57,4 +57,24 @@ class PublicacionRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function findTopLikedPosts(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->orderBy('p.likes', 'DESC')
+            ->setMaxResults(5)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findTopCommentedPosts(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.comments', 'c')
+            ->groupBy('p.id')
+            ->orderBy('COUNT(c.id)', 'DESC')
+            ->setMaxResults(5)
+            ->getQuery()
+            ->getResult();
+    }
 }

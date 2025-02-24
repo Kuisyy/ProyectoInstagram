@@ -6,6 +6,7 @@ use App\Repository\PublicacionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PublicacionRepository::class)]
 class Publicacion
@@ -15,9 +16,11 @@ class Publicacion
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['post'])]
     #[ORM\Column(length: 255)]
     private ?string $img = null;
 
+    #[Groups(['post'])]
     #[ORM\Column(length: 255)]
     private ?string $description = null;
 
@@ -30,6 +33,7 @@ class Publicacion
     #[ORM\OneToMany(targetEntity: Comments::class, mappedBy: 'publicacion')]
     private Collection $comments;
 
+    #[Groups(['post'])]
     #[ORM\Column]
     private ?int $likes = null;
 

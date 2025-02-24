@@ -2,16 +2,145 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-        {% endblock %}
+        <title>{% block title %}Instagram Clone{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>📸</text></svg>">
+        <style>
+            :root {
+                --primary-color: #0095f6;
+                --secondary-color: #00376b;
+                --background-color: #fafafa;
+                --border-color: #dbdbdb;
+                --text-color: #262626;
+                --light-gray: #efefef;
+                --hover-color: #f8f9fa;
+                --error-color: #ed4956;
+                --success-color: #2ecc71;
+            }
+
+            body {
+                background-color: var(--background-color);
+                margin: 0;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            }
+
+            .navbar {
+                background: white;
+                border-bottom: 1px solid var(--border-color);
+                position: fixed;
+                top: 0;
+                width: 100%;
+                z-index: 100;
+            }
+
+            .nav-container {
+                max-width: 975px;
+                margin: 0 auto;
+                padding: 10px 20px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .nav-logo {
+                font-size: 25px;
+                font-weight: bold;
+                text-decoration: none;
+                color: var(--text-color);
+            }
+
+            .nav-links {
+                display: flex;
+                gap: 20px;
+                align-items: center;
+            }
+
+            .nav-links a {
+                text-decoration: none;
+                color: var(--text-color);
+                font-weight: 500;
+            }
+
+            .main-container {
+                background-color: var(--light-gray);
+                min-height: 100vh;
+                padding-top: 80px;
+            }
+
+            .content-wrapper {
+                max-width: 935px;
+                margin: 0 auto;
+                padding: 20px;
+                background-color: var(--background-color);
+                border-radius: 3px;
+                box-shadow: 0 0 5px rgba(0,0,0,0.05);
+            }
+
+            .btn {
+                background-color: var(--primary-color);
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 4px;
+                cursor: pointer;
+                text-decoration: none;
+                font-weight: 600;
+            }
+
+            .btn:hover {
+                background-color: #0081d6;
+            }
+
+            .search-form {
+                position: relative;
+            }
+
+            .search-bar {
+                background: var(--light-gray);
+                border: none;
+                border-radius: 8px;
+                padding: 12px 16px;
+                width: 250px;
+                font-size: 14px;
+            }
+
+            .search-bar:focus {
+                outline: none;
+                background: white;
+                border: 1px solid var(--border-color);
+            }
+        </style>
+        {% block stylesheets %}{% endblock %}
 
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+        <nav class="navbar">
+            <div class="nav-container">
+                <a href="{{ path('app_main') }}" class="nav-logo">📸 Instagram</a>
+                {% if app.user %}
+                    <form action="{{ path('app_main_search') }}" method="post" class="search-form">
+                        <input type="text" name="username" class="search-bar" placeholder="Buscar usuarios o publicaciones...">
+                    </form>
+                    <div class="nav-links">
+                        <a href="{{ path('app_main') }}">🏠 Inicio</a>
+                        <a href="{{ path('app_publicacion_new') }}">➕ Crear</a>
+                        <a href="{{ path('app_publicacion_index') }}">👤 Perfil</a>
+                        <a href="{{ path('app_logout') }}" class="btn">Cerrar Sesión</a>
+                    </div>
+                {% else %}
+                    <div class="nav-links">
+                        <a href="{{ path('app_login') }}" class="btn">Iniciar Sesión</a>
+                        <a href="{{ path('app_register') }}" class="btn">Registrarse</a>
+                    </div>
+                {% endif %}
+            </div>
+        </nav>
+        <div class="main-container">
+            <div class="content-wrapper">
+                {% block body %}{% endblock %}
+            </div>
+        </div>
     </body>
 </html>

@@ -1,59 +1,132 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello PublicacionController!{% endblock %}
+{% block title %}Mi Perfil{% endblock %}
+
+{% block stylesheets %}
+<style>
+    .profile-header {
+        display: flex;
+        align-items: center;
+        gap: 80px;
+        padding: 40px 0;
+        border-bottom: 1px solid var(--border-color);
+        margin-bottom: 40px;
+    }
+
+    .profile-avatar {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background: var(--light-gray);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 50px;
+    }
+
+    .profile-info h1 {
+        font-size: 28px;
+        margin-bottom: 20px;
+    }
+
+    .profile-stats {
+        display: flex;
+        gap: 40px;
+        margin-bottom: 20px;
+    }
+
+    .stat-item {
+        font-size: 16px;
+    }
+
+    .stat-number {
+        font-weight: 600;
+    }
+
+    .grid-posts {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 28px;
+    }
+
+    .grid-post-item {
+        aspect-ratio: 1;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .grid-post-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .post-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.3);
+        opacity: 0;
+        transition: opacity 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        gap: 20px;
+    }
+
+    .grid-post-item:hover .post-overlay {
+        opacity: 1;
+    }
+
+    .new-post-btn {
+        background: var(--primary-color);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 4px;
+        text-decoration: none;
+        display: inline-block;
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}
 
 {% block body %}
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="profile-avatar">👤</div>
+        <div class="profile-info">
+            <h1>{{ app.user.username }}</h1>
+            <div class="profile-stats">
+                <div class="stat-item">
+                    <span class="stat-number">{{ publicaciones|length }}</span> publicaciones
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">{{ app.user.followers|length }}</span> seguidores
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">{{ app.user.following|length }}</span> seguidos
+                </div>
+            </div>
+        </div>
+    </div>
 
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <a href="{{ path('app_publicacion_new') }}" class="new-post-btn">➕ Nueva Publicación</a>
 
-<div class="example-wrapper">
-    <h1>Mis publicaciones ✅</h1>
-
-    <a href="{{ path('app_publicacion_new') }}">Crear nueva publicación</a>
-
-    <ul>
-        {% if publicaciones is not empty %}
-            {% for publicacion in publicaciones %}
-                {% if publicacion.userPost.id == app.user.id %}
-                    <img src="{{ asset('uploads/photos/' ~ publicacion.img) }}" alt="Imagen de la publicación" style="width: 100px; height: 100px;">
-                    <p>{{ publicacion.description }}</p>
-
-                    <a href="{{ path('app_comment_new', {'id': publicacion.id}) }}">Comentar</a> | 
-                    <a href="{{ path('app_publicacion_like', {'id': publicacion.id}) }}">
-                        {% set userLiked = false %}
-                        {% for like in publicacion.likes %}
-                            {% if like.user.id == app.user.id %}
-                                {% set userLiked = true %}
-                            {% endif %}
-                        {% endfor %}
-                        {{ userLiked ? 'Unlike' : 'Like' }}
-                    </a>
-                    <span>({{ publicacion.likes }})</span>
-
-                    {% for comment in comments %}
-                        {% if comment.publicacion.id == publicacion.id %}
-                            <li>
-                                <p>{{ comment.user.username }} - {{ comment.comment }}</p>
-                                <a href="{{ path('app_comment_hide', {id: comment.id}) }}"> 
-                                {% if comment.isVisible == 1 %}
-                                Ocultar
-                                {% else %}
-                                Mostrar 
-                                {% endif %}
-                                </a>
-                            </li>
-                        {% endif %}
-                    {% endfor %}
-                    <hr>
-                {% endif %}
-            {% endfor %}
-        {% else %}
-            <li>No hay publicaciones</li>
-        {% endif %}
-    </ul>
-    <a href="{{ path('app_main') }}">Volver</a>
+    <div class="grid-posts">
+        {% for publicacion in publicaciones %}
+            {% if publicacion.userPost.id == app.user.id %}
+                <div class="grid-post-item">
+                    <img src="{{ asset('uploads/photos/' ~ publicacion.img) }}" alt="Publicación">
+                    <div class="post-overlay">
+                        <span>❤️ {{ publicacion.likes }}</span>
+                        <span>💬 {{ publicacion.comments|length }}</span>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}

@@ -1,37 +1,81 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block title %}Log in{% endblock %}
+
+{% block stylesheets %}
+<style>
+    .login-container {
+        max-width: 350px;
+        margin: 40px auto;
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: 1px;
+        padding: 40px;
+        text-align: center;
+    }
+
+    .login-logo {
+        font-size: 40px;
+        margin-bottom: 30px;
+    }
+
+    .login-form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .form-control {
+        padding: 9px 0 7px 8px;
+        border: 1px solid var(--border-color);
+        border-radius: 3px;
+        background: #fafafa;
+    }
+
+    .login-btn {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 8px;
+        border-radius: 4px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .register-link {
+        margin-top: 20px;
+        padding: 20px;
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: 1px;
+    }
+
+    .register-link a {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
 
 {% block body %}
-<form method="post">
-    {% if error %}
-        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
+<div class="login-container">
+    <div class="login-logo">📸</div>
+    <h1 style="margin-bottom: 30px;">Instagram</h1>
 
-    {% if app.user %}
-        <div class="mb-3">
-            You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
-        </div>
-    {% endif %}
+    <form method="post" class="login-form">
+        {% if error %}
+            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
 
-    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-    <label for="inputUsername">Username</label>
-    <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control" autocomplete="username" required autofocus>
-    <label for="inputPassword">Password</label>
-    <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+        <input type="text" value="{{ last_username }}" name="username" class="form-control" placeholder="Usuario" required autofocus>
+        <input type="password" name="password" class="form-control" placeholder="Contraseña" required>
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+        <button class="login-btn" type="submit">Iniciar sesión</button>
+    </form>
+</div>
 
-    <input type="hidden" name="_csrf_token"
-           value="{{ csrf_token('authenticate') }}"
-    >
-
-    <div class="checkbox mb-3">
-        <label>
-            <input type="checkbox" name="_remember_me"> Remember me
-        </label>
-    </div>
-
-    <button class="btn btn-lg btn-primary" type="submit">
-        Sign in
-    </button>
-</form>
+<div class="register-link">
+    <p>¿No tienes una cuenta? <a href="{{ path('app_register') }}">Regístrate</a></p>
+</div>
 {% endblock %}

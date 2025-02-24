@@ -57,4 +57,15 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function findTopFollowedUsers(): array
+    {
+        return $this->createQueryBuilder('u')
+            ->leftJoin('u.followers', 'f')
+            ->groupBy('u.id')
+            ->orderBy('COUNT(f.id)', 'DESC')
+            ->setMaxResults(5)
+            ->getQuery()
+            ->getResult();
+    }
 }

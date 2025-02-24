@@ -2,12 +2,83 @@
 
 {% block title %}Ver Publicación{% endblock %}
 
+{% block stylesheets %}
+<style>
+    .publicacion-detalle {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        padding: 20px;
+        margin: 20px 0;
+    }
+
+    .publicacion-imagen {
+        width: 100%;
+        max-width: 600px;
+        height: auto;
+        border-radius: 8px;
+        margin: 0 auto;
+        display: block;
+    }
+
+    .publicacion-info {
+        margin-top: 20px;
+    }
+
+    .likes {
+        margin: 15px 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .likes a {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .likes a:hover {
+        background-color: var(--secondary-color);
+    }
+
+    .comments {
+        margin-top: 30px;
+    }
+
+    .comments ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .comments li {
+        background: var(--background-color);
+        padding: 15px;
+        border-radius: 8px;
+        margin: 10px 0;
+    }
+
+    .comment-actions {
+        margin-top: 10px;
+    }
+
+    .comment-actions a {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-size: 0.9em;
+    }
+</style>
+{% endblock %}
+
 {% block body %}
 <div class="example-wrapper">
     <h1>Publicación de {{ publicacion.userPost.username }}</h1>
 
     <div class="publicacion-detalle">
-        <img src="{{ asset('uploads/photos/' ~ publicacion.img) }}" alt="Imagen de la publicación" style="width: 400px; height: 400px;">
+        <img src="{{ asset('uploads/photos/' ~ publicacion.img) }}" alt="Imagen de la publicación" class="publicacion-imagen">
         <p>{{ publicacion.description }}</p>
 
         <div class="likes">

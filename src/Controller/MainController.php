@@ -33,9 +33,23 @@ class MainController extends AbstractController
         if($request->isMethod('POST')){
             $searchTerm = $request->request->get('username');
             
-            // Almacenar el término de búsqueda en la sesión
-            $request->getSession()->set('search_term', $searchTerm);
+            // Verificar si es una ruta de API
+            if (str_starts_with($searchTerm, '/api')) {
+                switch ($searchTerm) {
+                    case '/api/posts/recent':
+                        return $this->forward('App\Controller\ApiController::getRecentPosts');
+                    case (preg_match('/^\/api\/users\/(.+)$/', $searchTerm, $matches) ? true : false):
+                        $username = $matches[1];
+                        return $this->forward('App\Controller\ApiController::getUserInfo', [
+                            'username' => $username
+                        ]);
+                    default:
+                        return $this->json(['error' => 'Ruta de API no válida'], 404);
+                }
+            }
             
+            // Búsqueda normal
+            $request->getSession()->set('search_term', $searchTerm);
             return $this->redirectToRoute('app_main_search');
         }
         

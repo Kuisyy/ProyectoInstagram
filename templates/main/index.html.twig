@@ -2,62 +2,103 @@
 
 {% block title %}Hello MainController!{% endblock %}
 
-{% block body %}
+{% block stylesheets %}
 <style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    .feed {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .post-card {
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: 3px;
+        margin-bottom: 24px;
+    }
+
+    .post-header {
+        display: flex;
+        align-items: center;
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .post-user {
+        font-weight: 600;
+        text-decoration: none;
+        color: var(--text-color);
+    }
+
+    .post-image {
+        width: 100%;
+        max-height: 600px;
+        object-fit: cover;
+    }
+
+    .post-actions {
+        padding: 8px 16px;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .post-likes {
+        margin: 8px 0;
+        font-weight: 600;
+    }
+
+    .post-description {
+        padding: 0 16px 16px;
+    }
+
+    .post-comments {
+        padding: 0 16px;
+        color: #8e8e8e;
+    }
+
+    .action-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 24px;
+        padding: 8px;
+    }
 </style>
+{% endblock %}
 
-<div class="example-wrapper">
-    <header>
-        {% if app.user %}
-            <a href="{{ path('app_logout') }}">Logout</a>
-        {% else %}
-            <a href="{{ path('app_login') }}">Login</a>
-            <a href="{{ path('app_register') }}">Register</a>
-        {% endif %}
-    </header>
-    <h1>Bienvenido a Instagram! ✅</h1>
+{% block body %}
+<div class="feed">
+    {% for publicacion in publicacionesSeguidas %}
+        <article class="post-card">
+            <header class="post-header">
+                <a href="#" class="post-user">{{ publicacion.userPost.username }}</a>
+            </header>
 
-    {% if app.user %}
-        <a href="{{ path('app_publicacion_index') }}">Mis publicaciones</a>
-        <a href="{{ path('app_follower') }}">Seguir a alguien</a>
+            <img src="{{ asset('uploads/photos/' ~ publicacion.img) }}" alt="Publicación" class="post-image">
 
-        <form action="{{ path('app_main_search') }}" method="post">
-            <input type="text" name="username" placeholder="Nombre de usuario">
-            <button type="submit">Buscar</button>
-        </form>
-
-
-        <h2>Posts de los seguidos</h2>
-        {% for publicacion in publicacionesSeguidas %}
-            <div class="publicacion">
-                <p> - {{ publicacion.userPost.username }}</p>
-
-                <img src="{{ asset('uploads/photos/' ~ publicacion.img) }}" alt="Imagen de la publicación" width="200px" height="200px">
-                <div class="publicacion-info">
-                    <p>comentarios: {{ publicacion.comments|length }}</p>
-                    <p>{{ publicacion.description }}</p>
-                    <div class="likes">
-                        <a href="{{ path('app_publicacion_like', {'id': publicacion.id}) }}">
-                            {% set userLiked = false %}
-                            {% for like in publicacion.likes %}
-                                {% if like.user.id == app.user.id %}
-                                    {% set userLiked = true %}
-                                {% endif %}
-                            {% endfor %}
-                            {{ userLiked ? '👎 Quitar like' : '👍 Me gusta' }}
-                        </a>
-                        <span>({{ publicacion.likes }} likes)</span>
-                    </div>
-                </div>
-                <a href="{{ path('app_publicacion_show', {'id': publicacion.id}) }}">Ver publicación</a>
+            <div class="post-actions">
+                <a href="{{ path('app_publicacion_like', {'id': publicacion.id}) }}" class="action-btn">
+                    {% set userLiked = false %}
+                    {% for like in publicacion.likes %}
+                        {% if like.user.id == app.user.id %}
+                            {% set userLiked = true %}
+                        {% endif %}
+                    {% endfor %}
+                    {{ userLiked ? '❤️' : '🤍' }}
+                </a>
+                <a href="{{ path('app_comment_new', {'id': publicacion.id}) }}" class="action-btn">💬</a>
             </div>
-        {% endfor %}
-        
 
-    {% endif %}
+            <div class="post-likes">
+                {{ publicacion.likes }} Me gusta
+            </div>
 
-    
+            <div class="post-description">
+                <strong>{{ publicacion.userPost.username }}</strong> {{ publicacion.description }}
+            </div>
+
+            <div class="post-comments">
+                Ver los {{ publicacion.comments|length }} comentarios
+            </div>
+        </article>
+    {% endfor %}
 </div>
 {% endblock %}
