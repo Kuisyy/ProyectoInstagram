@@ -14,7 +14,7 @@
     <a href="{{ path('app_publicacion_new') }}">Crear nueva publicación</a>
 
     <ul>
-        {% if publicaciones is not empty and comments is not empty %}
+        {% if publicaciones is not empty %}
             {% for publicacion in publicaciones %}
                 {% if publicacion.userPost.id == app.user.id %}
                     <img src="{{ asset('uploads/photos/' ~ publicacion.img) }}" alt="Imagen de la publicación" style="width: 100px; height: 100px;">
