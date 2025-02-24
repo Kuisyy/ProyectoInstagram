@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Seguir usuarios{% endblock %}
+
+{% block body %}
+<div class="example-wrapper">
+    <h1>Seguir a alguien</h1>
+
+    <form method="post">
+        {% for user in users %}
+            {% if user.id != app.user.id %}
+                <div class="user-card">
+                    <p>{{ user.username }}</p>
+                    {% set isFollowing = false %}
+                    {% for follower in user.followers %}
+                        {% if follower.follower and follower.follower.id == app.user.id %}
+                            {% set isFollowing = true %}
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if isFollowing %}
+                        <button type="submit" name="unfollow" value="{{ user.id }}">Dejar de seguir</button>
+                    {% else %}
+                        <button type="submit" name="follow" value="{{ user.id }}">Seguir</button>
+                    {% endif %}
+                </div>
+                <hr>
+            {% endif %}
+        {% endfor %}
+    </form>
+
+    <a href="{{ path('app_main') }}">Volver</a>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nuevo Comentario{% endblock %}
+
+{% block body %}
+<div class="example-wrapper">
+    <h1>Nuevo Comentario</h1>
+
+    <div class="publicacion">
+        <img src="{{ asset('uploads/photos/' ~ publicacion.img) }}" alt="Imagen de la publicación" style="width: 200px;">
+        <p>{{ publicacion.description }}</p>
+    </div>
+
+    <form method="post">
+        <textarea name="comment" required placeholder="Escribe tu comentario..."></textarea>
+        <button type="submit">Comentar</button>
+    </form>
+
+    <a href="{{ path('app_publicacion_index') }}">Volver</a>
+</div>
+{% endblock %} 

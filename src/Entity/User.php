@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -10,8 +12,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
-#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
-#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_USERNAME', fields: ['username'])]
+#[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -20,7 +22,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
-    private ?string $email = null;
+    private ?string $username = null;
 
     /**
      * @var list<string> The user roles
@@ -34,19 +36,51 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
+    /**
+     * @var Collection<int, Publicacion>
+     */
+    #[ORM\OneToMany(targetEntity: Publicacion::class, mappedBy: 'userPost')]
+    private Collection $publicacions;
+
+    /**
+     * @var Collection<int, Comments>
+     */
+    #[ORM\OneToMany(targetEntity: Comments::class, mappedBy: 'user')]
+    private Collection $comments;
+
+    /**
+     * @var Collection<int, Followers>
+     */
+    #[ORM\OneToMany(targetEntity: Followers::class, mappedBy: 'followed')]
+    private Collection $followers;
+
+    /**
+     * @var Collection<int, Followers>
+     */
+    #[ORM\OneToMany(targetEntity: Followers::class, mappedBy: 'follower')]
+    private Collection $following;
+
+    public function __construct()
+    {
+        $this->publicacions = new ArrayCollection();
+        $this->comments = new ArrayCollection();
+        $this->followers = new ArrayCollection();
+        $this->following = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getEmail(): ?string
+    public function getUsername(): ?string
     {
-        return $this->email;
+        return $this->username;
     }
 
-    public function setEmail(string $email): static
+    public function setUsername(string $username): static
     {
-        $this->email = $email;
+        $this->username = $username;
 
         return $this;
     }
@@ -58,11 +92,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return (string) $this->username;
     }
 
     /**
      * @see UserInterface
+     *
      * @return list<string>
      */
     public function getRoles(): array
@@ -106,5 +141,119 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * @return Collection<int, Publicacion>
+     */
+    public function getPublicacions(): Collection
+    {
+        return $this->publicacions;
+    }
+
+    public function addPublicacion(Publicacion $publicacion): static
+    {
+        if (!$this->publicacions->contains($publicacion)) {
+            $this->publicacions->add($publicacion);
+            $publicacion->setUserPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removePublicacion(Publicacion $publicacion): static
+    {
+        if ($this->publicacions->removeElement($publicacion)) {
+            // set the owning side to null (unless already changed)
+            if ($publicacion->getUserPost() === $this) {
+                $publicacion->setUserPost(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Comments>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comments $comment): static
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comments $comment): static
+    {
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getUser() === $this) {
+                $comment->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Followers>
+     */
+    public function getFollowers(): Collection
+    {
+        return $this->followers;
+    }
+
+    public function addFollower(Followers $follower): static
+    {
+        if (!$this->followers->contains($follower)) {
+            $this->followers->add($follower);
+            $follower->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFollower(Followers $follower): static
+    {
+        if ($this->followers->removeElement($follower)) {
+            $follower->removeUser($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Followers>
+     */
+    public function getFollowing(): Collection
+    {
+        return $this->following;
+    }
+
+    public function addFollowing(Followers $following): static
+    {
+        if (!$this->following->contains($following)) {
+            $this->following->add($following);
+            $following->addFollower($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFollowing(Followers $following): static
+    {
+        if ($this->following->removeElement($following)) {
+            $following->removeFollower($this);
+        }
+
+        return $this;
     }
 }

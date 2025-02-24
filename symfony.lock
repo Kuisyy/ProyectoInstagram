@@ -14,7 +14,7 @@
         ]
     },
     "doctrine/doctrine-migrations-bundle": {
-        "version": "3.3",
+        "version": "3.4",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
@@ -136,7 +136,7 @@
         ]
     },
     "symfony/maker-bundle": {
-        "version": "1.61",
+        "version": "1.62",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
@@ -222,12 +222,12 @@
         ]
     },
     "symfony/stimulus-bundle": {
-        "version": "2.22",
+        "version": "2.23",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
             "version": "2.20",
-            "ref": "88bb6c47954903619ed36b2b3605909558dda424"
+            "ref": "3acc494b566816514a6873a89023a35440b6386d"
         },
         "files": [
             "./assets/bootstrap.js",
@@ -263,7 +263,7 @@
         ]
     },
     "symfony/ux-turbo": {
-        "version": "2.22",
+        "version": "2.23",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
@@ -297,6 +297,6 @@
         ]
     },
     "twig/extra-bundle": {
-        "version": "v3.18.0"
+        "version": "v3.20.0"
     }
 }
