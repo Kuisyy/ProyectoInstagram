@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ver Publicación{% endblock %}
+
+{% block body %}
+<div class="example-wrapper">
+    <h1>Publicación de {{ publicacion.userPost.username }}</h1>
+
+    <div class="publicacion-detalle">
+        <img src="{{ asset('uploads/photos/' ~ publicacion.img) }}" alt="Imagen de la publicación" style="width: 400px; height: 400px;">
+        <p>{{ publicacion.description }}</p>
+
+        <div class="likes">
+            <a href="{{ path('app_publicacion_like', {'id': publicacion.id}) }}">
+                {% set userLiked = false %}
+                {% for like in likes %}
+                    {% if like.user.id == app.user.id %}
+                        {% set userLiked = true %}
+                    {% endif %}
+                {% endfor %}
+                {{ userLiked ? '👎 Quitar like' : '👍 Me gusta' }}
+            </a>
+            <span>({{ publicacion.likes }} likes)</span>
+        </div>
+
+        <div class="comments">
+            <h3>Comentarios</h3>
+            <a href="{{ path('app_comment_new', {'id': publicacion.id}) }}">Añadir comentario</a>
+            
+            {% if comments is not empty %}
+                <ul>
+                {% for comment in comments %}
+                    {% if comment.isVisible %}
+                        <li>
+                            <strong>{{ comment.user.username }}:</strong> 
+                            {{ comment.comment }}
+                            {% if comment.user.id == app.user.id %}
+                                <a href="{{ path('app_comment_hide', {'id': comment.id}) }}">Ocultar</a>
+                            {% endif %}
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>No hay comentarios aún.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <a href="{{ path('app_main') }}">Volver al inicio</a>
+</div>
+{% endblock %}
