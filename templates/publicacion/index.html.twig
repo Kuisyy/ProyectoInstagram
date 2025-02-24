@@ -28,10 +28,12 @@
                             <li>
                                 <p>{{ comment.user.username }} - {{ comment.comment }}</p>
                                 <a href="{{ path('app_comment_hide', {id: comment.id}) }}"> 
-                                {% if comment.isVisible == 1 %}
-                                Ocultar
-                                {% else %}
-                                Mostrar 
+                                {% if is_granted('ROLE_ADMIN') %}
+                                    {% if comment.isVisible == 1 %}
+                                    Ocultar
+                                    {% else %}
+                                    Mostrar 
+                                    {% endif %}
                                 {% endif %}
                                 </a>
                             </li>

@@ -33,7 +33,8 @@ final class PublicacionController extends AbstractController
             $publicacion = new Publicacion();
             $publicacion->setUserPost($this->getUser());
             $publicacion->setDescription($request->request->get('descripcion'));
-
+            $publicacion->setIsVisible(1);
+            
             $file = $request->files->get('img');
             if ($file) {
                 $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);

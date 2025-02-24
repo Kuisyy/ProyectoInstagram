@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\CommentsRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
 
 #[ORM\Entity(repositoryClass: CommentsRepository::class)]
 class Comments
@@ -20,7 +22,7 @@ class Comments
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'comments')]
-    private ?publicacion $publicacion = null;
+    private ?Publicacion $publicacion = null;
 
     #[ORM\Column]
     private ?bool $isVisible = null;
