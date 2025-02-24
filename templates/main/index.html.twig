@@ -23,6 +23,11 @@
         <a href="{{ path('app_publicacion_index') }}">Mis publicaciones</a>
         <a href="{{ path('app_follower') }}">Seguir a alguien</a>
 
+        <form action="{{ path('app_main_search') }}" method="post">
+            <input type="text" name="username" placeholder="Nombre de usuario">
+            <button type="submit">Buscar</button>
+        </form>
+
 
         <h2>Posts de los seguidos</h2>
         {% for publicacion in publicacionesSeguidas %}

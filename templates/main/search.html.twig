@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Resultados de búsqueda{% endblock %}
+
+{% block body %}
+<div class="example-wrapper">
+    <h1>Resultados de búsqueda para: {{ searchTerm }}</h1>
+
+    {% if user %}
+        <div class="user-info">
+            <h2>Usuario encontrado:</h2>
+            <p>Nombre de usuario: {{ user.username }}</p>
+            
+            {% if app.user %}
+                {% set isFollowing = false %}
+                {% for follower in user.followers %}
+                    {% if follower.follower and follower.follower.id == app.user.id %}
+                        {% set isFollowing = true %}
+                    {% endif %}
+                {% endfor %}
+
+                <form action="{{ path('app_follower') }}" method="post">
+                    {% if isFollowing %}
+                        <button type="submit" name="unfollow" value="{{ user.id }}">Dejar de seguir</button>
+                    {% else %}
+                        <button type="submit" name="follow" value="{{ user.id }}">Seguir</button>
+                    {% endif %}
+                </form>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    {% if publicaciones is defined and publicaciones|length > 0 %}
+        <h2>Publicaciones encontradas:</h2>
+        {% for publicacion in publicaciones %}
+            <div class="publicacion">
+                <p>Por: {{ publicacion.userPost.username }}</p>
+                <img src="{{ asset('uploads/photos/' ~ publicacion.img) }}" alt="Imagen de la publicación" width="200px" height="200px">
+                <p>{{ publicacion.description }}</p>
+                <p>Comentarios: {{ publicacion.comments|length }}</p>
+            </div>
+            <hr>
+        {% endfor %}
+    {% else %}
+        {% if not user %}
+            <p>No se encontraron resultados para tu búsqueda.</p>
+        {% endif %}
+    {% endif %}
+
+    <a href="{{ path('app_main') }}">Volver al inicio</a>
+</div>
+{% endblock %}
