@@ -3,6 +3,7 @@
 {% block title %}Hello PublicacionController!{% endblock %}
 
 {% block body %}
+
 <style>
     .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
     .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
@@ -14,7 +15,7 @@
     <a href="{{ path('app_publicacion_new') }}">Crear nueva publicación</a>
 
     <ul>
-        {% if publicaciones is not empty and comments is not empty %}
+        {% if publicaciones is not empty %}
             {% for publicacion in publicaciones %}
                 {% if publicacion.userPost.id == app.user.id %}
                     <img src="{{ asset('uploads/photos/' ~ publicacion.img) }}" alt="Imagen de la publicación" style="width: 100px; height: 100px;">
@@ -26,6 +27,13 @@
                         {% if comment.publicacion.id == publicacion.id %}
                             <li>
                                 <p>{{ comment.user.username }} - {{ comment.comment }}</p>
+                                <a href="{{ path('app_comment_hide', {id: comment.id}) }}"> 
+                                {% if comment.isVisible == 1 %}
+                                Ocultar
+                                {% else %}
+                                Mostrar 
+                                {% endif %}
+                                </a>
                             </li>
                         {% endif %}
                     {% endfor %}

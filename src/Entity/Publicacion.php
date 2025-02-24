@@ -30,6 +30,9 @@ class Publicacion
     #[ORM\OneToMany(targetEntity: Comments::class, mappedBy: 'publicacion')]
     private Collection $comments;
 
+    #[ORM\Column]
+    private ?bool $isVisible = null;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
@@ -102,6 +105,18 @@ class Publicacion
                 $comment->setPublicacion(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isVisible(): ?bool
+    {
+        return $this->isVisible;
+    }
+
+    public function setIsVisible(bool $isVisible): static
+    {
+        $this->isVisible = $isVisible;
 
         return $this;
     }

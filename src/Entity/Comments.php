@@ -22,6 +22,9 @@ class Comments
     #[ORM\ManyToOne(inversedBy: 'comments')]
     private ?publicacion $publicacion = null;
 
+    #[ORM\Column]
+    private ?bool $isVisible = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -59,6 +62,18 @@ class Comments
     public function setPublicacion(?Publicacion $publicacion): static
     {
         $this->publicacion = $publicacion;
+
+        return $this;
+    }
+
+    public function isVisible(): ?bool
+    {
+        return $this->isVisible;
+    }
+
+    public function setIsVisible(bool $isVisible): static
+    {
+        $this->isVisible = $isVisible;
 
         return $this;
     }
