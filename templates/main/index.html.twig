@@ -38,7 +38,20 @@
                 <div class="publicacion-info">
                     <p>comentarios: {{ publicacion.comments|length }}</p>
                     <p>{{ publicacion.description }}</p>
+                    <div class="likes">
+                        <a href="{{ path('app_publicacion_like', {'id': publicacion.id}) }}">
+                            {% set userLiked = false %}
+                            {% for like in publicacion.likes %}
+                                {% if like.user.id == app.user.id %}
+                                    {% set userLiked = true %}
+                                {% endif %}
+                            {% endfor %}
+                            {{ userLiked ? '👎 Quitar like' : '👍 Me gusta' }}
+                        </a>
+                        <span>({{ publicacion.likes }} likes)</span>
+                    </div>
                 </div>
+                <a href="{{ path('app_publicacion_show', {'id': publicacion.id}) }}">Ver publicación</a>
             </div>
         {% endfor %}
         

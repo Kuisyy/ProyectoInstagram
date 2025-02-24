@@ -21,7 +21,17 @@
                     <img src="{{ asset('uploads/photos/' ~ publicacion.img) }}" alt="Imagen de la publicación" style="width: 100px; height: 100px;">
                     <p>{{ publicacion.description }}</p>
 
-                    <a href="{{ path('app_comment_new', {'id': publicacion.id}) }}">Comentar</a>
+                    <a href="{{ path('app_comment_new', {'id': publicacion.id}) }}">Comentar</a> | 
+                    <a href="{{ path('app_publicacion_like', {'id': publicacion.id}) }}">
+                        {% set userLiked = false %}
+                        {% for like in publicacion.likes %}
+                            {% if like.user.id == app.user.id %}
+                                {% set userLiked = true %}
+                            {% endif %}
+                        {% endfor %}
+                        {{ userLiked ? 'Unlike' : 'Like' }}
+                    </a>
+                    <span>({{ publicacion.likes }})</span>
 
                     {% for comment in comments %}
                         {% if comment.publicacion.id == publicacion.id %}

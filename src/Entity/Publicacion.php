@@ -31,7 +31,7 @@ class Publicacion
     private Collection $comments;
 
     #[ORM\Column]
-    private ?bool $isVisible = null;
+    private ?int $likes = null;
 
     public function __construct()
     {
@@ -109,14 +109,14 @@ class Publicacion
         return $this;
     }
 
-    public function isVisible(): ?bool
+    public function getLikes(): ?int
     {
-        return $this->isVisible;
+        return $this->likes;
     }
 
-    public function setIsVisible(bool $isVisible): static
+    public function setLikes(int $likes): static
     {
-        $this->isVisible = $isVisible;
+        $this->likes = $likes;
 
         return $this;
     }

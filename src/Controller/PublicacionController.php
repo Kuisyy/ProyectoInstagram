@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Publicacion;
 use App\Entity\Comments;
+use App\Entity\Like;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,6 +34,7 @@ final class PublicacionController extends AbstractController
             $publicacion = new Publicacion();
             $publicacion->setUserPost($this->getUser());
             $publicacion->setDescription($request->request->get('descripcion'));
+            $publicacion->setLikes(0);
 
             $file = $request->files->get('img');
             if ($file) {
@@ -59,5 +61,47 @@ final class PublicacionController extends AbstractController
 
         return $this->render('publicacion/new.html.twig');
     }
-    
+
+    #[Route('/publicacion/{id}/like', name: 'app_publicacion_like')]
+    public function toggleLike(Publicacion $publicacion, EntityManagerInterface $entityManager): Response
+    {
+        $user = $this->getUser();
+        
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $like = $entityManager->getRepository(Like::class)->findOneBy([
+            'publicacion' => $publicacion,
+            'user' => $user
+        ]);
+
+        if ($like) {
+            $entityManager->remove($like);
+            $publicacion->setLikes($publicacion->getLikes() - 1);
+        } else {
+            $like = new Like();
+            $like->setPublicacion($publicacion);
+            $like->setUser($user);
+            $entityManager->persist($like);
+            $publicacion->setLikes($publicacion->getLikes() + 1);
+        }
+
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_main');
+    }
+
+    #[Route('/publicacion/show/{id}', name: 'app_publicacion_show')]
+    public function show(Publicacion $publicacion, EntityManagerInterface $entityManager): Response
+    {
+        $likes = $entityManager->getRepository(Like::class)->findBy(['publicacion' => $publicacion]);
+        $comments = $entityManager->getRepository(Comments::class)->findBy(['publicacion' => $publicacion]);
+        return $this->render('publicacion/show.html.twig', [
+            'publicacion' => $publicacion,
+            'likes' => $likes,
+            'comments' => $comments
+        ]);
+    }
+
 }
