@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Publicacion{% endblock %}
+
+{% block body %}
+
+<h1>New Publicacion</h1>
+
+<form action="{{ path('app_publicacion_new') }}" method="post" enctype="multipart/form-data">
+    <input type="file" name="img" placeholder="Imagen" required>
+    <input type="text" name="descripcion" placeholder="Descripcion" required>
+    <button type="submit">Crear</button>
+</form>
+
+<a href="{{ path('app_publicacion_index') }}">Volver</a>
+
+{% endblock %}

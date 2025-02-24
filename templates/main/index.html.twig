@@ -5,16 +5,41 @@
 {% block body %}
 <style>
     .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background:rgb(255, 255, 255); padding: 2px 6px; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
 </style>
 
 <div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <header>
+        {% if app.user %}
+            <a href="{{ path('app_logout') }}">Logout</a>
+        {% else %}
+            <a href="{{ path('app_login') }}">Login</a>
+            <a href="{{ path('app_register') }}">Register</a>
+        {% endif %}
+    </header>
+    <h1>Bienvenido a Instagram! ✅</h1>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/gbdav/Documents/2º FP DAW/Symfony/ProyectoContratosEmpresariales/src/Controller/MainController.php</code></li>
-        <li>Your template at <code>C:/Users/gbdav/Documents/2º FP DAW/Symfony/ProyectoContratosEmpresariales/templates/main/index.html.twig</code></li>
-    </ul>
+    {% if app.user %}
+        <a href="{{ path('app_publicacion_index') }}">Mis publicaciones</a>
+        <a href="{{ path('app_follower') }}">Seguir a alguien</a>
+
+
+        <h2>Posts de los seguidos</h2>
+        {% for publicacion in publicacionesSeguidas %}
+            <div class="publicacion">
+                <p> - {{ publicacion.userPost.username }}</p>
+
+                <img src="{{ asset('uploads/photos/' ~ publicacion.img) }}" alt="Imagen de la publicación" width="200px" height="200px">
+                <div class="publicacion-info">
+                    <p>comentarios: {{ publicacion.comments|length }}</p>
+                    <p>{{ publicacion.description }}</p>
+                </div>
+            </div>
+        {% endfor %}
+        
+
+    {% endif %}
+
+    
 </div>
 {% endblock %}
