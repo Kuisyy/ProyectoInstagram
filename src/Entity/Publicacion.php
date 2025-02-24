@@ -33,6 +33,9 @@ class Publicacion
     #[ORM\Column]
     private ?int $likes = null;
 
+    #[ORM\Column]
+    private ?bool $isVisible = null;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
@@ -120,4 +123,18 @@ class Publicacion
 
         return $this;
     }
+
+    public function isVisible(): ?int
+    {
+        return $this-> isVisible;
+    }
+
+    public function setIsVisible(int $isVisible): static
+    {
+        $this->isVisible = $isVisible;
+
+        return $this;
+    }
+
+
 }
